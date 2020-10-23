@@ -1,82 +1,115 @@
 package commands;
 
 import javafx.util.Pair;
-
-import java.util.Stack;
+import java.util.LinkedList;
 
 public class Model {
     StringBuilder str;
-    Stack<Pair<String, String>> stack;
-    Stack<Pair<String, String>> redoStack;
+    LinkedList<Pair<String, String>> stack;
+    LinkedList<Pair<String, String>> redoStack;
 
     public Model() {
         this.str = new StringBuilder();
-        this.stack = new Stack<>();
-        this.redoStack = new Stack<>();
+        this.stack = new LinkedList<>();
+        this.redoStack = new LinkedList<>();
     }
     /**
      * print the current string being edited
      */
-    public void show() {
+    public void show(String command) {
         System.out.println(this.str);
+        stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
     /**
      * append a string at the end
      *
-     * @param content
+     * @param command
      */
-    public void addLast(String content) {
+    public void addLast(String command) {
+        String content = getStringParam(command);
         this.str.append(content);
+        System.out.println(this.str);
+        stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
     /**
      * insert a string at the head
      *
-     * @param content
+     * @param command
      */
-    public void addFirst(String content) {
-        this.str.insert(0, content);
+    public void addFirst(String command) {
+        String content = getStringParam(command);
+        this.str = new StringBuilder(content + this.str);
+        System.out.println(this.str);
+        stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
     /**
      * delete string at the end
      *
-     * @param length
+     * @param command
      */
-    public void deleteLast(int length) {
-        this.str.delete(str.length() - length, str.length());
+    public void deleteLast(String command) {
+        int length = getIntParam(command);
+        try {
+            this.str.delete(str.length() - length, str.length());
+        } catch (StringIndexOutOfBoundsException e) {
+            this.str = new StringBuilder();
+        }
+        System.out.println(str);
+        stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
     /**
      * delete string at the head
      *
-     * @param length
+     * @param command
      */
-    public void deleteFirst(int length) {
-        this.str.delete(0, length);
+    public void deleteFirst(String command) {
+        int length = getIntParam(command);
+        try {
+            this.str.delete(0, length);
+        } catch (StringIndexOutOfBoundsException e) {
+            this.str = new StringBuilder();
+        }
+        System.out.println(str);
+        stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
     /**
      * list the most recently executed commands
-     * @param count
+     * @param command
      */
-    public void list(int count) {
+    public void list(String command) {
+        int count = getIntParam(command);
+        int size = stack.size();
 
+        System.out.println("--part--");
+        for(int i = 1; i <= Math.min(count, size); i++) {
+            System.out.println(i + " " + stack.get(i - 1).getKey());
+        }
+        stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
     /**
      * undo the last command
      */
     public void undo() {
-
+        redoStack.push(stack.pop());
+        Pair<String, String> lastState = stack.getFirst();
+        this.str = new StringBuilder(lastState.getValue());
+        System.out.println(this.str);
     }
 
     /**
      * redo the the last undo
      */
     public void redo() {
-
+        Pair<String, String> lastState = redoStack.pop();
+        stack.push(lastState);
+        this.str = new StringBuilder(lastState.getValue());
+        System.out.println(this.str);
     }
 
     /**
@@ -119,5 +152,12 @@ public class Model {
             count = 1;
         }
         return count;
+    }
+
+    static void printStack(LinkedList<Pair<String, String>> stack) {
+        System.out.println("--whole--");
+        for (int i = 0; i < stack.size(); i++) {
+            System.out.println(stack.get(i));
+        }
     }
 }

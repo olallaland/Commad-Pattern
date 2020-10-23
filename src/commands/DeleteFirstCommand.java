@@ -2,13 +2,13 @@ package commands;
 
 public class DeleteFirstCommand implements Command {
     private Model model;
-    private int count;
-    public DeleteFirstCommand(Model model, int count) {
+    private String content;
+    public DeleteFirstCommand(Model model, String content) {
         this.model = model;
-        this.count = count;
+        this.content = content;
     }
     @Override
     public void execute() {
-        this.model.deleteFirst(count);
+        this.model.deleteFirst(content);
     }
 }

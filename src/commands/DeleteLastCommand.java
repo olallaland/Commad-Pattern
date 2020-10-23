@@ -2,13 +2,13 @@ package commands;
 
 public class DeleteLastCommand implements Command {
     private Model model;
-    private int count;
-    public DeleteLastCommand(Model model, int count) {
+    private String content;
+    public DeleteLastCommand(Model model, String content) {
         this.model = model;
-        this.count = count;
+        this.content = content;
     }
     @Override
     public void execute() {
-        this.model.deleteLast(count);
+        this.model.deleteLast(content);
     }
 }

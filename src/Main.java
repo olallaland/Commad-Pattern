@@ -18,7 +18,7 @@ public class Main {
             String input = in.nextLine();
             switch (input.charAt(0)) {
                 case 's':
-                    commandExecutor.execute(new ShowCommand(model));
+                    commandExecutor.execute(new ShowCommand(model, input));
                     break;
                 case 'A':
                     commandExecutor.execute(new AddLastCommand(model, input));
@@ -36,10 +36,10 @@ public class Main {
                     commandExecutor.execute(new ListCommands(model, input));
                     break;
                 case 'u':
-                    commandExecutor.execute(new UndoCommand());
+                    commandExecutor.execute(new UndoCommand(model));
                     break;
                 case 'r':
-                    commandExecutor.execute(new RedoCommand());
+                    commandExecutor.execute(new RedoCommand(model));
                     break;
                 case 'm':
                     commandExecutor.execute(new DefineCommand());

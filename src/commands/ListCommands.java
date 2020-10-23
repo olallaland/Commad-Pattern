@@ -2,13 +2,13 @@ package commands;
 
 public class ListCommands implements Command {
     private Model model;
-    private int count;
-    public ListCommands(Model model, int count) {
+    private String content;
+    public ListCommands(Model model, String content) {
         this.model = model;
-        this.count = count;
+        this.content = content;
     }
     @Override
     public void execute() {
-        this.model.list(count);
+        this.model.list(content);
     }
 }
