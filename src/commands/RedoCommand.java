@@ -9,4 +9,9 @@ public class RedoCommand implements Command {
     public void execute() {
         this.model.redo();
     }
+
+    @Override
+    public void setCommand(String command) {
+
+    }
 }

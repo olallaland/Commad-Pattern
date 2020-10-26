@@ -1,21 +1,21 @@
 package commands;
 
-public class DeleteFirstCommand implements Command {
+public class ListCommand implements Command {
     private Model model;
     private String command;
 
-    public DeleteFirstCommand(Model model) {
+    public ListCommand(Model model) {
         this.model = model;
     }
 
-    public DeleteFirstCommand(Model model, String command) {
+    public ListCommand(Model model, String command) {
         this.model = model;
         this.command = command;
     }
 
     @Override
     public void execute() {
-        this.model.deleteFirst(command);
+        this.model.list(command);
     }
 
     @Override

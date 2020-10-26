@@ -11,14 +11,19 @@ public class Model {
     public Model() {
         this.str = new StringBuilder();
         this.stack = new LinkedList<>();
+        this.stack.push(new Pair<>("init", ""));
         this.redoStack = new LinkedList<>();
     }
+
+    public StringBuilder getModel() {
+        return this.str;
+    }
+
     /**
      * print the current string being edited
      */
-    public void show(String command) {
+    public void show() {
         System.out.println(this.str);
-        stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
     /**
@@ -29,7 +34,6 @@ public class Model {
     public void addLast(String command) {
         String content = getStringParam(command);
         this.str.append(content);
-        System.out.println(this.str);
         stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
@@ -41,7 +45,6 @@ public class Model {
     public void addFirst(String command) {
         String content = getStringParam(command);
         this.str = new StringBuilder(content + this.str);
-        System.out.println(this.str);
         stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
@@ -57,7 +60,6 @@ public class Model {
         } catch (StringIndexOutOfBoundsException e) {
             this.str = new StringBuilder();
         }
-        System.out.println(str);
         stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
@@ -73,7 +75,6 @@ public class Model {
         } catch (StringIndexOutOfBoundsException e) {
             this.str = new StringBuilder();
         }
-        System.out.println(str);
         stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
@@ -85,42 +86,29 @@ public class Model {
         int count = getIntParam(command);
         int size = stack.size();
 
-        System.out.println("--part--");
+        //System.out.println("--part--");
         for(int i = 1; i <= Math.min(count, size); i++) {
             System.out.println(i + " " + stack.get(i - 1).getKey());
         }
-        stack.push(new Pair<String, String>(command, this.str.toString()));
     }
 
     /**
-     * undo the last command
+     * undo the last command by popping the stack
      */
     public void undo() {
         redoStack.push(stack.pop());
         Pair<String, String> lastState = stack.getFirst();
         this.str = new StringBuilder(lastState.getValue());
-        System.out.println(this.str);
     }
 
     /**
-     * redo the the last undo
+     * redo the the last undo by recover the stack
      */
     public void redo() {
         Pair<String, String> lastState = redoStack.pop();
         stack.push(lastState);
         this.str = new StringBuilder(lastState.getValue());
-        System.out.println(this.str);
     }
-
-    /**
-     * combine the last several commands executed into a macro command
-     * @param count
-     * @param name
-     */
-    public void define(int count, String name) {
-
-    }
-
 
     /**
      * split content from input
@@ -132,8 +120,8 @@ public class Model {
         String content = "";
         try {
             content = strings[1];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            content = "";
+        } catch (Exception e) {
+            throw new RuntimeException(" -- invalid command -- ");
         }
         return content;
     }
@@ -148,16 +136,10 @@ public class Model {
         int count = 0;
         try {
             count = Integer.parseInt(strings[1]);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            count = 1;
+        } catch (Exception e) {
+            throw new RuntimeException(" -- invalid command -- ");
         }
         return count;
     }
 
-    static void printStack(LinkedList<Pair<String, String>> stack) {
-        System.out.println("--whole--");
-        for (int i = 0; i < stack.size(); i++) {
-            System.out.println(stack.get(i));
-        }
-    }
 }
